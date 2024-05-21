@@ -6,7 +6,7 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ARG OPENLDAP_VERSION
 
-ENV OPENLDAP_VERSION=${OPENLDAP_VERSION:-"2.6.6"} \
+ENV OPENLDAP_VERSION=${OPENLDAP_VERSION:-"2.6.8"} \
     SCHEMA2LDIF_VERSION=1.3 \
     IMAGE_NAME="tiredofit/openldap" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-openldap/"
