@@ -1,3 +1,9 @@
+## 2.6-7.6.9 2024-05-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add libevent, libsasl, libuuid runtime dependencies
+
+
 ## 2.6-7.6.8 2024-05-22 <dave at tiredofit dot ca>
 
    ### Added

@@ -50,10 +50,13 @@ RUN source /assets/functions/00-container && \
                     coreutils \
                     cracklib \
                     iptables \
+                    libevent \
                     libltdl \
                     libuuid \
                     libintl \
+                    libsasl \
                     libsodium \
+                    libuuid \
                     openssl \
                     perl \
                     pigz \
