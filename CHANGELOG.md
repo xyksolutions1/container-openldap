@@ -1,3 +1,9 @@
+## 2.6-7.6.10 2024-06-17 <dave at tiredofit dot ca>
+
+   ### Added
+      - Rebuild of 2.6-7.6.9
+
+
 ## 2.6-7.6.9 2024-05-23 <dave at tiredofit dot ca>
 
    ### Added

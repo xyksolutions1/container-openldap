@@ -44,35 +44,29 @@ RUN source /assets/functions/00-container && \
                         && \
     \
     package install .openldap-run-deps \
-                    aws-cli \
-                    bzip2 \
-                    cyrus-sasl \
-                    coreutils \
-                    cracklib \
-                    iptables \
-                    libevent \
-                    libltdl \
-                    libuuid \
-                    libintl \
-                    libsasl \
-                    libsodium \
-                    libuuid \
-                    openssl \
-                    perl \
-                    pigz \
-                    sed \
-                    tar \
-                    unixodbc \
-                    xz \
-                    zstd \
-                    && \
-    \
-    mkdir -p /usr/src/pixz && \
-    curl -ssL https://github.com/vasi/pixz/releases/download/v1.0.7/pixz-1.0.7.tar.gz | tar xfz - --strip=1 -C /usr/src/pixz && \
-    cd /usr/src/pixz && \
-    ./configure && \
-    make -j$(getconf _NPROCESSORS_ONLN) && \
-    make install && \
+                        aws-cli \
+                        bzip2 \
+                        cyrus-sasl \
+                        coreutils \
+                        cracklib \
+                        iptables \
+                        libevent \
+                        libltdl \
+                        libuuid \
+                        libintl \
+                        libsasl \
+                        libsodium \
+                        libuuid \
+                        openssl \
+                        perl \
+                        pigz \
+                        pixz \
+                        sed \
+                        tar \
+                        unixodbc \
+                        xz \
+                        zstd \
+                        && \
     \
     mkdir -p /usr/src/pbzip2 && \
     curl -ssL https://launchpad.net/pbzip2/1.1/1.1.13/+download/pbzip2-1.1.13.tar.gz | tar xfz - --strip=1 -C /usr/src/pbzip2 && \

@@ -228,7 +228,7 @@ configure_ldap_server() {
         fi
 
         # setup bootstrap config - Part 1
-        if [ -z "$(ls -A -I lost+found "${DB_PATH}")" ] && [ -z "$(ls -A -I lost+found "${CONFIG_PATH}"/slapd.d)" ]; then
+        if dir_empty "${DB_PATH}" && dir_empty "${CONFIG_PATH}"/slapd.d; then
             new_install=true
             print_warn "First time install detected"
 
@@ -321,12 +321,12 @@ EOF
             chown -R ldap:ldap "${CONFIG_PATH}"
 
             # Error: the database directory (${DB_PATH}) is empty but not the config directory (${CONFIG_PATH}slapd.d)
-        elif [ -z "$(ls -A -I lost+found "${DB_PATH}")" ] && [ ! -z "$(ls -A -I lost+found "${CONFIG_PATH}"/slapd.d)" ]; then
+        elif dir_empty "${DB_PATH}" && dir_notempty "${CONFIG_PATH}"/slapd.d ; then
             print_error "The database directory (${DB_PATH}) is empty but not the config directory (${CONFIG_PATH}/slapd.d)"
             exit 1
 
             # Error: the config directory (${CONFIG_PATH}slapd.d) is empty but not the database directory (${DB_PATH})
-        elif [ ! -z "$(ls -A -I lost+found "${DB_PATH}")" ] && [ -z "$(ls -A -I lost+found "${CONFIG_PATH}"/slapd.d)" ]; then
+        elif dir_notempty "${DB_PATH}" && dir_empty "${CONFIG_PATH}" ; then
             print_error "The config directory (${CONFIG_PATH}/slapd.d) is empty but not the database directory (${DB_PATH})"
             exit 1
         fi
