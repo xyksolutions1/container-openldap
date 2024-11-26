@@ -1,3 +1,17 @@
+## 2.6-7.6.13 2024-11-26 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add Audit log module
+      - Add constraint module
+      - Add deref module
+      - Add dyngroup module
+      - Add dynlist module
+      - Add nestgroup module
+      - Add proxycache module
+      - Add Syslog Support
+      - Add valsort module
+
+
 ## 2.6-7.6.12 2024-11-26 <dave at tiredofit dot ca>
 
    ### Added

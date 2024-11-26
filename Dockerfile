@@ -105,9 +105,14 @@ RUN source /assets/functions/00-container && \
         --localstatedir=/var/run/openldap \
         --enable-argon2 \
         --enable-asyncmeta=mod \
+        --enable-auditlog=mod \
         --enable-balancer=yes \
+        --enable-constraint=mod \
         --enable-crypt \
+        --enable-deref=mod \
         --enable-dnssrv=mod \
+        --enable-dyngroup=mod \
+        --enable-dynlist=mod \
         --enable-dynamic \
         --enable-ldap=mod \
         --enable-lload=mod \
@@ -115,14 +120,18 @@ RUN source /assets/functions/00-container && \
         --enable-meta=mod \
         --enable-modules \
         --enable-monitor=yes \
+        --enable-nestgroup=mod \
         --enable-null=mod \
         --enable-overlays=mod \
+        --enable-proxycache=mod \
         --enable-passwd=mod \
         --enable-relay=mod \
         --enable-spasswd \
         --enable-slapd \
         --enable-sock=mod \
         --enable-sql=mod \
+        --enable-syslog \
+        --enable-valsort=mod \
         --with-cyrus-sasl \
         --with-systemd=no \
         --with-tls=openssl \
