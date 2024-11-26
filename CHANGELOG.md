@@ -1,3 +1,9 @@
+## 2.6-2.6-7.7 2024-11-26 <dave at tiredofit dot ca>
+
+   ### Added
+      - OpenLDAP 2.6.9
+
+
 ## 2.6-7.6.11 2024-07-05 <dave at tiredofit dot ca>
 
    ### Added
