@@ -1,4 +1,4 @@
-## 2.6-2.6-7.7 2024-11-26 <dave at tiredofit dot ca>
+## 2.6-7.6.12 2024-11-26 <dave at tiredofit dot ca>
 
    ### Added
       - OpenLDAP 2.6.9
