@@ -1,0 +1,17 @@
+# Load memberof module
+dn: cn=module{0},cn=config
+changetype: modify
+add: olcModuleLoad
+olcModuleLoad: memberof
+
+# Backend memberOf overlay
+dn: olcOverlay={1}nestgroup,olcDatabase={1}mdb,cn=config
+changetype: add
+objectClass: olcOverlayConfig
+objectClass: olcNestGroupConfig
+olcOverlay: {1}nestgroup
+olcNestGroupBase: {{BASE_DN}}
+olcNestGroupFlags: member-values
+olcNestGroupFlags: member-filter
+olcNestGroupFlags: memberOf-values
+olcNestGroupFlags: memberOf-filter

@@ -459,6 +459,8 @@ EOF
                 print_notice "Add bootstrap LDIFs"
                 for ldif_file in $(find /assets/slapd/config/bootstrap/ldif -mindepth 1 -maxdepth 1 -type f -name \*.ldif | sort); do
                     print_debug "Bootstrap LDIF: Processing file ${ldif_file}"
+                    update_template "${ldif_file}" \
+                        BASE_DN
                     ldap_add_or_modify "${ldif_file}"
                 done
 
@@ -466,6 +468,8 @@ EOF
                 if [ -d /assets/slapd/config/bootstrap/ldif/custom ]; then
                     print_notice "Add custom bootstrap ldifs"
                     for ldif_file in $(find /assets/slapd/config/bootstrap/ldif/custom -type f -name \*.ldif | sort); do
+                        update_template "${ldif_file}" \
+                            BASE_DN
                         print_debug "LDIF: Processing file ${ldif_file}"
                         ldap_add_or_modify "${ldif_file}"
                     done

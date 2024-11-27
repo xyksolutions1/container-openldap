@@ -1,3 +1,10 @@
+## 2.6-7.7.0 2024-11-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add memberOfAddCheck to memberOf Overlay (TRUE)
+      - Add settings to enable nestgroup overlay on first init
+
+
 ## 2.6-7.6.13 2024-11-26 <dave at tiredofit dot ca>
 
    ### Added
