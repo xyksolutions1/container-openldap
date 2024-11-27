@@ -1,10 +1,10 @@
-# Load memberof module
+# Load nestgroup module
 dn: cn=module{0},cn=config
 changetype: modify
 add: olcModuleLoad
-olcModuleLoad: memberof
+olcModuleLoad: nestgroup
 
-# Backend memberOf overlay
+# Backend nestgroup overlay
 dn: olcOverlay={1}nestgroup,olcDatabase={1}mdb,cn=config
 changetype: add
 objectClass: olcOverlayConfig

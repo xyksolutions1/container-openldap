@@ -1,3 +1,9 @@
+## 2.6-7.7.1 2024-11-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Repair issues with 2.6-7.7.0
+
+
 ## 2.6-7.7.0 2024-11-27 <dave at tiredofit dot ca>
 
    ### Added
