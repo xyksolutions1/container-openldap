@@ -118,16 +118,24 @@ EOF
     }
 
     certificates_check_dhparam() {
-        print_debug "Certificates: DH Param - Checking existence of '${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}'"
-        if [ ! -f "${TLS_DH_PARAM_PATH}"/"${TLS_DH_PARAM_FILENAME}" ]; then
-            certificates_create_dhparam
+        if var_true "${TLS_ENABLE_DH_PARAM}"; then
+            print_debug "Certificates: DH Param - Checking existence of '${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}'"
+            if [ ! -f "${TLS_DH_PARAM_PATH}"/"${TLS_DH_PARAM_FILENAME}" ]; then
+                certificates_create_dhparam
+            fi
+        else
+            print_debug "Certificates: DH Param - Skipping creation/check (TLS_ENABLE_DH_PARAM is not true)"
         fi
     }
 
     certificates_create_dhparam() {
-        print_notice "Certificates: DH Param - Creating '${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}'"
-        mkdir -p "${TLS_DH_PARAM_PATH}"
-        silent openssl dhparam -out "${TLS_DH_PARAM_PATH}"/"${TLS_DH_PARAM_FILENAME}" "${TLS_DH_PARAM_KEYSIZE}"
+        if var_true "${TLS_ENABLE_DH_PARAM}"; then
+            print_notice "Certificates: DH Param - Creating '${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}'"
+            mkdir -p "${TLS_DH_PARAM_PATH}"
+            silent openssl dhparam -out "${TLS_DH_PARAM_PATH}"/"${TLS_DH_PARAM_FILENAME}" "${TLS_DH_PARAM_KEYSIZE}"
+        else
+            print_debug "Certificates: DH Param - Skipping creation (TLS_ENABLE_DH_PARAM is not true)"
+        fi
     }
 
     certificates_trust_ca() {
@@ -144,7 +152,7 @@ EOF
 
     case "$1" in
     "DHPARAM" | "dhparam")
-        if var_true "${ENABLE_TLS}"; then
+        if var_true "${ENABLE_TLS}" && var_true "${TLS_ENABLE_DH_PARAM}"; then
             certificates_check_dhparam
         fi
         ;;
@@ -152,6 +160,9 @@ EOF
         if var_true "${ENABLE_TLS}"; then
             certificates_check_certificates "${1}"
             certificates_trust_ca
+            if var_true "${TLS_ENABLE_DH_PARAM}"; then
+                certificates_check_dhparam
+            fi
         fi
         ;;
     esac
@@ -366,7 +377,9 @@ EOF
                 certificates "${TLS_CRT_PATH}"/"${TLS_CRT_FILENAME}"
 
                 # Create DHParamFile if not found
-                certificates dhparam
+                if var_true "${TLS_ENABLE_DH_PARAM}"; then
+                    certificates dhparam
+                fi
 
                 if var_true "${TLS_RESET_PERMISSIONS}"; then
                     chown ldap:ldap "${PREVIOUS_TLS_CRT_PATH}" "${PREVIOUS_TLS_KEY_PATH}" "${PREVIOUS_TLS_CA_CRT_PATH}" "${PREVIOUS_TLS_DH_PARAM_PATH}" || true
@@ -507,25 +520,34 @@ EOF
                 chown -R ldap:ldap /assets/slapd || true
 
                 # Adapt TLS ldif
+                if var_true "${TLS_ENABLE_DH_PARAM}"; then
+                    TLS_DH_PARAM_LDIF_ENABLE="-\nreplace: olcTLSDHParamFile\nolcTLSDHParamFile: ${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}\n-"
+                else
+                    TLS_DH_PARAM_LDIF_ENABLE=""
+                fi
+                # Always attempt to delete olcTLSDHParamFile on disable
+                TLS_DH_PARAM_LDIF_DISABLE="-\ndelete: olcTLSDHParamFile\n-"
                 update_template /assets/slapd/config/tls/tls-enable.ldif \
-                                                                            TLS_CA_CRT_PATH \
-                                                                            TLS_CA_CRT_FILENAME \
-                                                                            TLS_CRT_PATH \
-                                                                            TLS_CRT_FILENAME \
-                                                                            TLS_KEY_PATH \
-                                                                            TLS_KEY_FILENAME \
-                                                                            TLS_DH_PARAM_PATH \
-                                                                            TLS_DH_PARAM_FILENAME \
-                                                                            TLS_CIPHER_SUITE \
-                                                                            TLS_VERIFY_CLIENT
-
+                    TLS_CA_CRT_PATH \
+                    TLS_CA_CRT_FILENAME \
+                    TLS_CRT_PATH \
+                    TLS_CRT_FILENAME \
+                    TLS_KEY_PATH \
+                    TLS_KEY_FILENAME \
+                    TLS_DH_PARAM_PATH \
+                    TLS_DH_PARAM_FILENAME \
+                    TLS_CIPHER_SUITE \
+                    TLS_VERIFY_CLIENT \
+                    TLS_DH_PARAM_LDIF_ENABLE
                 silent ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f /assets/slapd/config/tls/tls-enable.ldif
 
                 [[ -f "$was_started_with_tls" ]] && rm -f "$was_started_with_tls"
                 echo "export PREVIOUS_TLS_CA_CRT_PATH=${TLS_CA_CRT_PATH}/${TLS_CA_CRT_FILENAME}" > "${was_started_with_tls}"
                 echo "export PREVIOUS_TLS_CRT_PATH=${TLS_CRT_PATH}/${TLS_CRT_FILENAME}" >> "${was_started_with_tls}"
                 echo "export PREVIOUS_TLS_KEY_PATH=${TLS_KEY_PATH}/${TLS_KEY_FILENAME}" >> "${was_started_with_tls}"
-                echo "export PREVIOUS_TLS_DH_PARAM_PATH=${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}" >> "${was_started_with_tls}"
+                if var_true "${TLS_ENABLE_DH_PARAM}"; then
+                    echo "export PREVIOUS_TLS_DH_PARAM_PATH=${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}" >> "${was_started_with_tls}"
+                fi
 
                 # Enforce TLS
                 if var_true "${TLS_ENFORCE}"; then

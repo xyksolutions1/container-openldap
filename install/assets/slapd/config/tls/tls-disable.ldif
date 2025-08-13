@@ -7,7 +7,5 @@ delete: olcTLSCACertificateFile
 delete: olcTLSCertificateFile
 -
 delete: olcTLSCertificateKeyFile
--
-delete: olcTLSDHParamFile
--
+{{TLS_DH_PARAM_LDIF_DISABLE}}
 delete: olcTLSVerifyClient

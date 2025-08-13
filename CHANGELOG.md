@@ -1,3 +1,12 @@
+## 2.6-7.7.5 2025-08-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add TLS_ENABLE_DH_PARAM environment variable
+
+   ### Changed
+      - Change TLS Cipher Suites to HIGH:!aNULL:!MD5:!3DES:!RC4:!DES:!eNULL
+
+
 ## 2.6-7.7.4 2025-08-12 <dave at tiredofit dot ca>
 
    ### Added
