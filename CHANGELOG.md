@@ -1,3 +1,9 @@
+## 2.6-7.7.4 2025-08-12 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add ca-certificates to run-deps
+
+
 ## 2.6-7.7.3 2025-05-22 <dave at tiredofit dot ca>
 
    ### Added

@@ -46,6 +46,7 @@ RUN source /assets/functions/00-container && \
     package install .openldap-run-deps \
                         aws-cli \
                         bzip2 \
+                        ca-certificates \
                         cyrus-sasl \
                         coreutils \
                         cracklib \
