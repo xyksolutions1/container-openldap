@@ -227,7 +227,7 @@ If you already have a check_password.conf or ppm.conf in /etc/openldap/ the foll
 | `TLS_CREATE_CA`         | Automatically create CA when generating certificates               | `TRUE`                                                                                                                  |
 | `TLS_CRT_FILENAME`      | TLS cert filename                                                  | `cert.pem`                                                                                                              |
 | `TLS_CRT_PATH`          | TLS cert path                                                      | `/certs/`                                                                                                               |
-| `TLS_ENABLE_DH_PARAM` | Enable DH Param Functionality | `TRUE` |
+| `TLS_ENABLE_DH_PARAM`   | Enable DH Param Functionality                                      | `TRUE`                                                                                                                  |
 | `TLS_DH_PARAM_FILENAME` | DH Param filename                                                  | `dhparam.pem`                                                                                                           |
 | `TLS_DH_PARAM_KEYSIZE`  | Keysize for DH Param                                               | `2048`                                                                                                                  |
 | `TLS_DH_PARAM_PATH`     | DH Param path                                                      | `/certs/`                                                                                                               |
