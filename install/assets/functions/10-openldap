@@ -521,7 +521,7 @@ EOF
 
                 # Adapt TLS ldif
                 if var_true "${TLS_ENABLE_DH_PARAM}"; then
-                    TLS_DH_PARAM_LDIF_ENABLE="-\nreplace: olcTLSDHParamFile\nolcTLSDHParamFile: ${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}\n-"
+                    TLS_DH_PARAM_LDIF_ENABLE="-\nreplace: olcTLSDHParamFile\nolcTLSDHParamFile: ${TLS_DH_PARAM_PATH}/${TLS_DH_PARAM_FILENAME}\n"
                 else
                     TLS_DH_PARAM_LDIF_ENABLE=""
                 fi

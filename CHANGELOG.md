@@ -1,3 +1,9 @@
+## 2.6-7.7.8 2025-09-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix trailing - for TLS_DH_PARAM_LDIF_ENABLE environment variable
+
+
 ## 2.6-7.7.7 2025-09-01 <dave at tiredofit dot ca>
 
    ### Changed
