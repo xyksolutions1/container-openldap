@@ -1,0 +1,7 @@
+dn: cn=config
+changetype: modify
+delete: olcLogFile
+-
+delete: olcLogFileFormat
+-
+delete: olcLogFileOnly

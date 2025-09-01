@@ -4,7 +4,42 @@ source /assets/functions/00-container
 prepare_service 10-openldap
 PROCESS_NAME="openldap"
 
+## TODO - This is temporary due top upstream base issues - Check TLS Configuration
+update_template_newline() {
+    ## Replace placeholders with values
+    ## Usage: 'update_template <filename> <varname>
+    ## Can have multiple varnames - Don't prefix the varname with $
+    ## You can use wildcards if you Quote the first argument eg "*.template"
+    template_files=${1}
+    templates=$(echo "${template_files}" | tr " " "\n")
+    shift
+    for template_file in $templates; do
+
+        [[ ! -f "${template_file}" ]] && return 1
+
+        template_variables=($@)
+        template_user=$(stat -c %U "${template_file}")
+        template_tmp_file=$(mktemp)
+        cp -a "${template_file}" "${template_tmp_file}"
+
+        for template_variable in ${template_variables[@]}; do
+        # Keep the compatibilty: {{VAR}} => ${VAR}
+            sed -ri "s/[{]{2}$template_variable[}]{2}/\${$template_variable}/g" "${template_tmp_file}"
+            print_debug "[update_template] Template: '${template_file}' updating field '${template_variable}'"
+        done
+
+        # Replace placeholders
+        (
+            export ${template_variables[@]}
+            local IFS=":"; sudo -HEu ${template_user} envsubst "${template_variables[*]/#/$}" < "${template_tmp_file}" > "${template_file}"
+        )
+        sed -i 's/\\n/\n/g' "${template_file}"
+        rm -f "${template_tmp_file}"
+    done
+}
+
 create_data_directories
+
 configure_ldap_server
 configure_ldap_client
 configure_backup

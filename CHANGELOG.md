@@ -1,3 +1,9 @@
+## 2.6-7.7.7 2025-09-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix issue with TLS scripting on initial boot (@credit devicarus)
+
+
 ## 2.6-7.7.6 2025-08-13 <dave at tiredofit dot ca>
 
    ### Changed

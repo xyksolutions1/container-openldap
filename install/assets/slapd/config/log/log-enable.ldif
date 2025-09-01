@@ -1,0 +1,10 @@
+dn: cn=config
+changetype: modify
+replace: olcLogFile
+olcLogFile: {{slapd_log_file}}
+-
+replace: olcLogFileFormat
+olcLogFileFormat: {{slapd_log_prefix}}
+-
+replace: olcLogFileOnly
+olcLogFileOnly: {{slapd_log_type}}

@@ -537,7 +537,8 @@ EOF
                     TLS_DH_PARAM_PATH \
                     TLS_DH_PARAM_FILENAME \
                     TLS_CIPHER_SUITE \
-                    TLS_VERIFY_CLIENT \
+                    TLS_VERIFY_CLIENT
+                update_template_newline /assets/slapd/config/tls/tls-enable.ldif \
                     TLS_DH_PARAM_LDIF_ENABLE
                 silent ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f /assets/slapd/config/tls/tls-enable.ldif
 
