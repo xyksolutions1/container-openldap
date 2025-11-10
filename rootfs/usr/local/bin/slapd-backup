@@ -1,0 +1,25 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+prepare_service 10-openldap
+
+slapd_backup() {
+    local database=${1}
+    local filename=${2}
+    create_folder "${BACKUP_PATH%/}" ldap:ldap 750
+
+    /usr/sbin/slapcat -F "${CONFIG_PATH%/}" -n ${database}| gzip | silent tee "${BACKUP_PATH%/}/"$(TZ=${TIMEZONE} date "+%Y%m%dT%H%M%S")-${filename}.gz
+    exit 0
+}
+
+case "${1}" in
+    config )
+        slapd_backup 0 config
+    ;;
+    data )
+        slapd_backup 1 data
+    ;;
+esac

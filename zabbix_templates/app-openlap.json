@@ -13,7 +13,7 @@
                 "uuid": "260b658d9fc34bb9ab05585bd10ba45b",
                 "template": "OpenLDAP",
                 "name": "OpenLDAP",
-                "description": "OpenLDAP Directory server monitoring. \n\nThis template is meant to be used specifically for https://github.com/tiredofit/docker-openldap",
+                "description": "OpenLDAP Directory server monitoring. \n\nThis template is meant to be used specifically for https://github.com/nfrastack/container-openldap",
                 "groups": [
                     {
                         "name": "Templates"

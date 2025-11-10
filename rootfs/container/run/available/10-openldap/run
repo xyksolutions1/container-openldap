@@ -1,0 +1,20 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+prepare_service 10-openldap
+
+SERVICE_NAME="openldap"
+check_container_initialized
+check_service_initialized init
+openldap_configure_logging
+ulimit -n ${ULIMIT_N}
+liftoff
+
+print_start "Starting OpenLDAP $(grep -o "ADD: OpenLDAP .* |" /container/build/${IMAGE_NAME/\//_}/build.log | awk '{print $3}')"
+exec slapd \
+            $SLAPD_ARGS -h "${SLAPD_HOSTS}" \
+            -u ldap \
+            -g ldap ${log_level}

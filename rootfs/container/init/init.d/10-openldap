@@ -1,0 +1,17 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+prepare_service 10-openldap
+SERVICE_NAME="openldap"
+
+openldap_bootstrap_filesystem
+openldap_configure_ldap_server
+openldap_configure_ldap_client
+openldap_configure_backup
+openldap_configure_networking
+openldap_configure_ppolicy_check_modules
+
+liftoff

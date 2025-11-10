@@ -1,0 +1,69 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+prepare_service 10-openldap
+
+# Usage: slapd-restore dbnum file
+slapd_restore() {
+    local dbnum=$1
+    local filename=$2
+
+    s6-svc -d /var/run/s6/legacy-services/10-openldap
+    pkill slapd
+
+    tmp_backup_file="$(mktemp)"
+    case "${filename##*.}" in
+        gz )
+            gunzip -c "${filename}" | silent tee "${tmp_backup_file}"
+        ;;
+        zst )
+            zstd -d "${filename}" | silent tee "${tmp_backup_file}"
+        ;;
+    esac
+
+    chown ldap:ldap "${tmp_backup_file}"
+
+    case "${dbnum}" in
+        0 )
+            tmp_container_files="$(mktemp -d)"
+            mv "${CONFIG_PATH%/}"/container-* "${tmp_container_files}"/
+            rm -rf "${CONFIG_PATH%/}"/*
+        ;;
+        1 )
+            rm -rf "${DB_PATH:?}"/*
+        ;;
+    esac
+
+    sudo -u ldap slapadd -v -F ${CONFIG_PATH%/} -n "${dbnum}" -l "${tmp_backup_file}"
+
+    case "${dbnum}" in
+        0 )
+            mv "${tmp_container_files%/}"/* "${CONFIG_PATH%/}"/
+            rm -rf "${tmp_container_files}"
+        ;;
+    esac
+
+    s6-svc -u /var/run/s6/legacy-services/10-openldap
+    rm -rf  "${tmp_backup_file}"
+    exit 0
+}
+
+if [ -z "${1}" ] ; then
+    echo "Syntax: $(basename "$0") dbnum[0|1] [filename]"
+    exit 2
+elif [ -z "${2}" ] ; then
+    echo "Need Filename to restore!"
+    exit 2
+fi
+
+case "${1}" in
+    config | 0)
+        slapd_restore 0 "${1}"
+    ;;
+    data | 1)
+        slapd_restore 1 "${2}"
+    ;;
+esac

@@ -1,3 +1,15 @@
+## 2.6-8.0.0pre 2025-11-10 <code at nfrastack dot com>
+
+   ### Changed
+      - Change base image to nfrastack/base
+      - Cleanup build code
+      - Cleanup bootstrapping functions
+      - Add LOG_PREFIX allowing to output proper human dates
+      - Cracklib wordlist updated to 2.10.3
+      - Removed S3 backup support
+      - Change values of environment variables
+
+
 ## 2.6-7.7.99 2025-11-09 <dave at tiredofit dot ca>
 
 Add EOL notice and deprecate image
@@ -85,7 +97,6 @@ Add EOL notice and deprecate image
 
    ### Added
       - OpenLDAP 2.6.9
-
 
 ## 2.6-7.6.11 2024-07-05 <dave at tiredofit dot ca>
 

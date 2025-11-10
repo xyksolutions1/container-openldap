@@ -17,7 +17,7 @@
                 "uuid": "b91f579b2d02424981425412d257ffd5",
                 "template": "OpenLDAP Backup",
                 "name": "OpenLDAP Backup",
-                "description": "Template for OpenLDAP Backup\n\nMeant for use specifically with https://github.com/tiredofit/docker-openldap",
+                "description": "Template for OpenLDAP Backup\n\nMeant for use specifically with https://github.com/nfrastack/container-openldap",
                 "groups": [
                     {
                         "name": "DB/Backup"
