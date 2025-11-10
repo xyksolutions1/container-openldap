@@ -34,11 +34,18 @@ Upon starting this image it will give you a ready to run server with many config
 - [Environment Variables](#environment-variables)
   - [Base Images used](#base-images-used)
   - [Core Configuration](#core-configuration)
+  - [Logging Options](#logging-options)
+  - [Backup Options](#backup-options)
+  - [Password Policy Options](#password-policy-options)
+  - [TLS options](#tls-options)
+  - [Replication options](#replication-options)
+  - [Other environment variables](#other-environment-variables)
 - [Users and Groups](#users-and-groups)
   - [Networking](#networking)
 - [Maintenance](#maintenance)
   - [Shell Access](#shell-access)
 - [Support & Maintenance](#support--maintenance)
+- [References](#references)
 - [License](#license)
 
 ## Installation
@@ -120,9 +127,9 @@ Below is the complete list of available options that can be used to customize yo
 
 | Parameter              | Description                                                   | Default                | `_FILE` | Advanced |
 | ---------------------- | ------------------------------------------------------------- | ---------------------- | ------- | -------- |
-| `DATA_PATH`            | Base Data Folder                                              | `/data/`               ||
-| `CONFIG_PATH`          | Configuration files path                                      | `${DATA_PATH}/config/` | |
-| `DB_PATH`              | Data Files path                                               | `${DATA_PATH}/db/`     ||
+| `DATA_PATH`            | Base Data Folder                                              | `/data/`               |         |          |
+| `CONFIG_PATH`          | Configuration files path                                      | `${DATA_PATH}/config/` |         |          |
+| `DB_PATH`              | Data Files path                                               | `${DATA_PATH}/db/`     |         |          |
 | `DOMAIN`               | LDAP domain.                                                  | `example.org`          |         |          |
 | `BASE_DN`              | LDAP base DN. If empty automatically set from `DOMAIN` value. | (empty)                |         |          |
 | `ADMIN_PASS`           | Ldap Admin password.                                          | `admin`                | x       |          |
