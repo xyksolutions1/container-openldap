@@ -130,14 +130,14 @@ move_backup() {
     case "${BACKUP_TYPE,,}" in
         file* )
             mkdir -p "${BACKUP_PATH}"
-            silent mv "${BACKUP_TEMP_LOCATION}"/*."${checksum_extension}" "${BACKUP_PATH}"/
-            mv "${BACKUP_TEMP_LOCATION}"/"${target}" "${BACKUP_PATH}"/"${target}"
+            silent mv "${BACKUP_TEMP_LOCATION}"/*."${checksum_extension}" "${BACKUP_PATH%/}"/
+            mv "${BACKUP_TEMP_LOCATION}"/"${target}" "${BACKUP_PATH%/}"/"${target}"
             if var_true "${BACKUP_CREATE_LATEST_SYMLINK}"; then
-                ln -sf "${BACKUP_PATH}"/"${target}" "${BACKUP_PATH}"/latest-openldap_"${CONTAINER_NAME}"
+                ln -sf "${BACKUP_PATH%/}"/"${target}" "${BACKUP_PATH%/}"/latest-openldap_"${CONTAINER_NAME}"
             fi
             if [ -n "${BACKUP_ARCHIVE_TIME}" ]; then
                 mkdir -p "${BACKUP_PATH_ARCHIVE}"
-                find "${BACKUP_PATH}"/ -maxdepth 1 -mmin +"${BACKUP_ARCHIVE_TIME}" -iname "*" -exec mv {} "${BACKUP_PATH_ARCHIVE}" \;
+                find "${BACKUP_PATH%/}"/ -maxdepth 1 -mmin +"${BACKUP_ARCHIVE_TIME}" -iname "*" -exec mv {} "${BACKUP_PATH_ARCHIVE}" \;
             fi
         ;;
     esac
@@ -189,8 +189,8 @@ while true; do
             zabbix )
                 if binary_exists zabbix_sender; then
                     print_notice "Sending Backup Statistics to Zabbix"
-                    silent zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k openldap.backup.size -o "$(stat -c%s "${BACKUP_PATH}"/"${target}")"
-                    silent zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k openldap.backup.datetime -o "$(date -r "${BACKUP_PATH}"/"${target}" +'%s')"
+                    silent zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k openldap.backup.size -o "$(stat -c%s "${BACKUP_PATH%/}"/"${target}")"
+                    silent zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k openldap.backup.datetime -o "$(date -r "${BACKUP_PATH%/}"/"${target}" +'%s')"
                 else
                     print_error "Zabbix Sender not detected. Cannot send backup statistics to Zabbix Server"
                     break
@@ -201,7 +201,7 @@ while true; do
 
     if [[ -n "${BACKUP_RETENTION}" ]]; then
         print_notice "Cleaning up old backups"
-        find "${BACKUP_PATH}"/ -mmin +"${BACKUP_RETENTION}" -iname "*" -exec rm {} \;
+        find "${BACKUP_PATH%/}"/ -mmin +"${BACKUP_RETENTION}" -iname "*" -exec rm {} \;
     fi
 
     if [ -n "${POST_SCRIPT}" ]; then
