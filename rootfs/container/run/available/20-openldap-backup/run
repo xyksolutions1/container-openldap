@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 source /container/base/functions/container/init
-prepare_service 10-openldap
+prepare_service
 SERVICE_NAME="openldap-backup"
 check_container_initialized
 check_service_initialized init 10-openldap
