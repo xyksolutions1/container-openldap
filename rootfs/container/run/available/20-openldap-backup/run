@@ -8,9 +8,8 @@ prepare_service
 SERVICE_NAME="openldap-backup"
 check_container_initialized
 check_service_initialized init 10-openldap
-liftoff
+if [ "${1,,}" != "now" ] ; then liftoff; fi
 
-### Set Compression Options
 if var_true "${BACKUP_PARALLEL_COMPRESSION}"; then
     bzip="pbzip2 -${BACKUP_COMPRESSION_LEVEL}"
     gzip="pigz -${BACKUP_COMPRESSION_LEVEL}"
