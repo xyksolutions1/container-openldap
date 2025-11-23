@@ -203,6 +203,9 @@ RUN echo "" && \
     rm -rf /usr/Changelog && \
     rm -rf /usr/LICENSE && \
     \
+    curl -sSL https://raw.githubusercontent.com/perl-ldap/perl-ldap/refs/heads/master/contrib/ldifsort.pl -o /usr/local/bin/ldifsort.pl && \
+    chmod +x /usr/local/bin/ldifsort.pl && \
+    \
     mkdir -p /usr/share/dict && \
     cd /usr/share/dict && \
     wget ${CRACKLIB_REPO_URL%/}/releases/download/v${CRACKLIB_VERSION}/cracklib-words-${CRACKLIB_VERSION}.gz && \
