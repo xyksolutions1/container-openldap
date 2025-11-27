@@ -18,3 +18,4 @@ exec slapd \
             $SLAPD_ARGS -h "${SLAPD_HOSTS}" \
             -u ldap \
             -g ldap ${log_level}
+

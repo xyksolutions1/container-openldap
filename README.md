@@ -203,25 +203,24 @@ If you already have a check_password.conf or ppm.conf in /etc/openldap/ the foll
 | `TLS_CA_NAME`           | Selfsigned CA Name                                                        | `ldap-selfsigned-ca`                      |
 | `TLS_CA_SUBJECT`        | Selfsigned CA Subject                                                     | `/C=XX/ST=LDAP/L=LDAP/O=LDAP/CN=`         |
 | `TLS_CA_CERT_SUBJECT`   | SelfSigned CA Cert Sujbject                                               | `${TLS_CA_SUBJECT}${TLS_CA_NAME}`         |
-| `TLS_CA_CERT_FILENAME`  | CA Cert filename                                                          | `${TLS_CA_AME}.crt`                       |
-| `TLS_CA_KEY_FILENAME`   | CA Key filename                                                           | `${TLS_CA_NAME}.key`                      |
+| `TLS_CA_CERT_FILE`      | CA Cert filename                                                          | `${TLS_CA_AME}.crt`                       |
+| `TLS_CA_KEY_FILE`       | CA Key filename                                                           | `${TLS_CA_NAME}.key`                      |
 | `TLS_CA_CERT_PATH`      | CA Certificates path                                                      | `/certs/${TLS_CA_NAME}/`                  |
 | `TLS_CIPHER_SUITE`      | Cipher Suite to use                                                       | `HIGH:!aNULL:!MD5:!3DES:!RC4:!DES:!eNULL` |
 | `TLS_CREATE_SELFSIGNED` | Automatically create locally signed CA, cert and key if they do not exist | `TRUE`                                    |
-| `TLS_CERT_FILENAME`     | TLS cert filename                                                         | `cert.pem`                                |
+| `TLS_CERT_FILE`         | TLS cert filename                                                         | `cert.pem`                                |
 | `TLS_CERT_PATH`         | TLS cert path                                                             | `/certs/`                                 |
 | `TLS_ENABLE_DH_PARAM`   | Enable DH Param Functionality                                             | `TRUE`                                    |
-| `TLS_DH_PARAM_FILENAME` | DH Param filename                                                         | `dhparam.pem`                             |
+| `TLS_DH_PARAM_FILE`     | DH Param filename                                                         | `dhparam.pem`                             |
 | `TLS_DH_PARAM_KEYSIZE`  | Keysize for DH Param                                                      | `2048`                                    |
 | `TLS_DH_PARAM_PATH`     | DH Param path                                                             | `/certs/`                                 |
 | `TLS_ENFORCE`           | Enforce TLS Usage                                                         | `FALSE`                                   |
-| `TLS_KEY_FILENAME`      | TLS Key filename                                                          | `key.pem`                                 |
+| `TLS_KEY_FILE`          | TLS Key filename                                                          | `key.pem`                                 |
 | `TLS_KEY_PATH`          | TLS Key path                                                              | `/certs/`                                 |
 | `TLS_RESET_PERMISSIONS` | Change permissions on certificate directories for OpenLDAP to read        | `TRUE`                                    |
 | `TLS_VERIFY_CLIENT`     | TLS verify client.                                                        | `try`                                     |
 
 >> Changing TLS Options are best done manually upon initial image deployment
-
 
     Help: http://www.openldap.org/doc/admin26/tls.html
 
