@@ -4,28 +4,28 @@
 
 certificates() {
     certificates_create_certificate_authority() {
-        if [ ! -f "${TLS_CA_CRT_PATH%/}"/"${TLS_CA_CRT_FILENAME}" ]; then
+        if [ ! -f "${TLS_CA_CERT_PATH%/}"/"${TLS_CA_CERT_FILE}" ]; then
 
             print_debug "Certificates: Creating Self Signed Certificate Authority"
-            mkdir -p "${TLS_CA_CRT_PATH}"
-            echo "000a" >"${TLS_CA_CRT_PATH%/}"/serial
-            touch "${TLS_CA_CRT_PATH%/}"/certindex
+            mkdir -p "${TLS_CA_CERT_PATH}"
+            echo "000a" >"${TLS_CA_CERT_PATH%/}"/serial
+            touch "${TLS_CA_CERT_PATH%/}"/certindex
 
             silent eval "openssl req \
-                -newkey rsa:4096 -keyout ${TLS_CA_CRT_PATH%/}/${TLS_CA_KEY_FILENAME} \
-                -x509 -days 3650 -nodes -out ${TLS_CA_CRT_PATH%/}/${TLS_CA_CRT_FILENAME} \
-                -subj \"${TLS_CA_CRT_SUBJECT}\""
+                -newkey rsa:4096 -keyout ${TLS_CA_CERT_PATH%/}/${TLS_CA_KEY_FILE} \
+                -x509 -days 3650 -nodes -out ${TLS_CA_CERT_PATH%/}/${TLS_CA_CERT_FILE} \
+                -subj \"${TLS_CA_CERT_SUBJECT}\""
 
-            cat <<EOF | silent tee  "${TLS_CA_CRT_PATH%/}"/"${TLS_CA_NAME}".conf
+            cat <<EOF | silent tee  "${TLS_CA_CERT_PATH%/}"/"${TLS_CA_NAME}".conf
       [ ca ]
       default_ca = ${TLS_CA_NAME}
       [ ${TLS_CA_NAME} ]
       unique_subject = no
       new_certs_dir = .
-      certificate = "${TLS_CA_CRT_PATH%/}"/"${TLS_CA_CRT_FILENAME}"
-      database = "${TLS_CA_CRT_PATH%/}"/certindex
-      private_key = "${TLS_CA_CRT_PATH%/}"/${TLS_CA_KEY_FILENAME}
-      serial = "${TLS_CA_CRT_PATH%/}"/serial
+      certificate = "${TLS_CA_CERT_PATH%/}"/"${TLS_CA_CERT_FILE}"
+      database = "${TLS_CA_CERT_PATH%/}"/certindex
+      private_key = "${TLS_CA_CERT_PATH%/}"/${TLS_CA_KEY_FILE}
+      serial = "${TLS_CA_CERT_PATH%/}"/serial
       default_days = 3650
       default_md = default
       policy = ${TLS_CA_NAME}_policy
@@ -67,8 +67,8 @@ EOF
 
     certificates_create_certificate() {
         if [ "$1" != "" ]; then
-            if var_true "${TLS_CREATE_CA}"; then
-                if [ ! -f "${TLS_CRT_PATH%/}"/"${TLS_CRT_FILENAME}" ] || [ ! -f "${TLS_CA_CRT_PATH%/}"/"${TLS_CA_KEY_FILENAME}" ]; then
+            if var_true "${TLS_CREATE_SELFSIGNED}"; then
+                if [ ! -f "${TLS_CERT_PATH%/}"/"${TLS_CERT_FILE}" ] || [ ! -f "${TLS_CA_CERT_PATH%/}"/"${TLS_CA_KEY_FILE}" ]; then
                     print_debug "Certificates: No CA Found - Creating before generating certificates"
                     certificates_create_certificate_authority
                 fi
@@ -76,36 +76,36 @@ EOF
 
             CERT_SUBJECT="${TLS_CA_SUBJECT}${HOSTNAME}"
 
-            if var_true "${TLS_CREATE_CA}"; then
-                if [ ! -f "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILENAME}" ]; then
+            if var_true "${TLS_CREATE_SELFSIGNED}"; then
+                if [ ! -f "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILE}" ]; then
                     print_debug "Certificates: Creating Certificate: ${1}"
                     silent eval "openssl req \
-                        -newkey rsa:2048 -keyout ${TLS_KEY_PATH%/}/${TLS_KEY_FILENAME} \
-                        -nodes -out ${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME%%.*}.csr \
+                        -newkey rsa:2048 -keyout ${TLS_KEY_PATH%/}/${TLS_KEY_FILE} \
+                        -nodes -out ${TLS_CERT_PATH%/}/${TLS_CERT_FILE%%.*}.csr \
                         -subj \"${CERT_SUBJECT}\""
                 fi
             else
-                if [ ! -f "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILENAME}" ]; then
+                if [ ! -f "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILE}" ]; then
                     print_debug "Certificates: Creating Certificate: ${1}"
                     silent eval "openssl req \
                             -new -x509 -nodes -days 3650 \
                             -config /etc/ssl/openssl.cnf \
-                            -out ${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME} \
-                            -keyout ${TLS_KEY_PATH%/}/${TLS_KEY_FILENAME}"
+                            -out ${TLS_CERT_PATH%/}/${TLS_CERT_FILE} \
+                            -keyout ${TLS_KEY_PATH%/}/${TLS_KEY_FILE}"
                 fi
             fi
 
-            if var_true "${TLS_CREATE_CA}"; then
+            if var_true "${TLS_CREATE_SELFSIGNED}"; then
                 if [ ! -f "${1%%.*}".cert ]; then
                     print_debug "Certificates: Signing Certificate: ${1}"
                     silent eval "openssl ca \
                             -batch \
-                            -config ${TLS_CA_CRT_PATH%/}/${TLS_CA_NAME}.conf \
+                            -config ${TLS_CA_CERT_PATH%/}/${TLS_CA_NAME}.conf \
                             -notext \
-                            -in ${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME%%.*}.csr \
-                            -out ${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME}"
-                    rm -rf "$(tail -n 1 "${TLS_CA_CRT_PATH%/}"/certindex | awk '{print $3}')".pem
-                    rm -rf "${TLS_CRT_PATH%/}"/"${TLS_CRT_FILENAME%%.*}".csr
+                            -in ${TLS_CERT_PATH%/}/${TLS_CERT_FILE%%.*}.csr \
+                            -out ${TLS_CERT_PATH%/}/${TLS_CERT_FILE}"
+                    rm -rf "$(tail -n 1 "${TLS_CA_CERT_PATH%/}"/certindex | awk '{print $3}')".pem
+                    rm -rf "${TLS_CERT_PATH%/}"/"${TLS_CERT_FILE%%.*}".csr
                 fi
             fi
         fi
@@ -121,8 +121,8 @@ EOF
 
     certificates_check_dhparam() {
         if var_true "${TLS_ENABLE_DH_PARAM}"; then
-            print_debug "Certificates: DH Param - Checking existence of '${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}'"
-            if [ ! -f "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILENAME}" ]; then
+            print_debug "Certificates: DH Param - Checking existence of '${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILE}'"
+            if [ ! -f "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILE}" ]; then
                 certificates_create_dhparam
             fi
         else
@@ -132,20 +132,20 @@ EOF
 
     certificates_create_dhparam() {
         if var_true "${TLS_ENABLE_DH_PARAM}"; then
-            print_notice "Certificates: DH Param - Creating '${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}'"
+            print_notice "Certificates: DH Param - Creating '${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILE}'"
             mkdir -p "${TLS_DH_PARAM_PATH}"
-            silent openssl dhparam -out "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILENAME}" "${TLS_DH_PARAM_KEYSIZE}"
+            silent openssl dhparam -out "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILE}" "${TLS_DH_PARAM_KEYSIZE}"
         else
             print_debug "Certificates: DH Param - Skipping creation (TLS_ENABLE_DH_PARAM is not true)"
         fi
     }
 
     certificates_trust_ca() {
-        if var_true "${TLS_CREATE_CA}"; then
-            if [ -f "${TLS_CA_CRT_PATH%/}"/"${TLS_CA_CRT_FILENAME}" ]; then
-                if [ ! -L /usr/local/share/ca-certificates/"${TLS_CA_CRT_FILENAME}" ]; then
+        if var_true "${TLS_CREATE_SELFSIGNED}"; then
+            if [ -f "${TLS_CA_CERT_PATH%/}"/"${TLS_CA_CERT_FILE}" ]; then
+                if [ ! -L /usr/local/share/ca-certificates/"${TLS_CA_CERT_FILE}" ]; then
                     print_debug "Certificates: Trusting CA ${TLS_CA_NAME}"
-                    ln -sf "${TLS_CA_CRT_PATH%/}"/"${TLS_CA_CRT_FILENAME}" /usr/local/share/ca-certificates/
+                    ln -sf "${TLS_CA_CERT_PATH%/}"/"${TLS_CA_CERT_FILE}" /usr/local/share/ca-certificates/
                     update-ca-certificates >/dev/null 2>&1
                 fi
             fi
@@ -203,12 +203,12 @@ EOF
     chown ldap:ldap /container/data/openldap/ldap.conf
 
     if var_true "${ENABLE_TLS}"; then
-        echo "TLS_CACERT ${TLS_CA_CRT_PATH%/}/${TLS_CA_CRT_FILENAME}" | silent tee -a /container/data/openldap/ldap.conf
+        echo "TLS_CACERT ${TLS_CA_CERT_PATH%/}/${TLS_CA_CERT_FILE}" | silent tee -a /container/data/openldap/ldap.conf
         echo "TLS_REQCERT ${TLS_VERIFY_CLIENT}" | silent tee -a /container/data/openldap/ldap.conf
 
         if [ -f "${HOME}"/.ldaprc ]; then rm -f "${HOME}"/.ldaprc; fi
-        echo "TLS_CERT ${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME}" | silent tee "${HOME}"/.ldaprc
-        echo "TLS_KEY ${TLS_KEY_PATH%/}/${TLS_KEY_FILENAME}" | silent tee -a "${HOME}"/.ldaprc
+        echo "TLS_CERT ${TLS_CERT_PATH%/}/${TLS_CERT_FILE}" | silent tee "${HOME}"/.ldaprc
+        echo "TLS_KEY ${TLS_KEY_PATH%/}/${TLS_KEY_FILE}" | silent tee -a "${HOME}"/.ldaprc
         cp -f "${HOME}"/.ldaprc /container/data/openldap/.ldaprc
     fi
 
@@ -381,13 +381,13 @@ EOF
 
                 print_debug "Checking previous TLS certificates.."
 
-                [[ -z "${PREVIOUS_TLS_CA_CRT_PATH}" ]] && PREVIOUS_TLS_CA_CRT_PATH="${TLS_CA_CRT_PATH%/}/${TLS_CA_CRT_FILENAME}"
-                [[ -z "${PREVIOUS_TLS_CRT_PATH}" ]] && PREVIOUS_TLS_CRT_PATH="${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME}"
-                [[ -z "${PREVIOUS_TLS_KEY_PATH}" ]] && PREVIOUS_TLS_KEY_PATH="${TLS_KEY_PATH%/}/${TLS_KEY_FILENAME}"
-                [[ -z "${PREVIOUS_TLS_DH_PARAM_PATH}" ]] && PREVIOUS_TLS_DH_PARAM_PATH="${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}"
+                [[ -z "${PREVIOUS_TLS_CA_CERT_PATH}" ]] && PREVIOUS_TLS_CA_CERT_PATH="${TLS_CA_CERT_PATH%/}/${TLS_CA_CERT_FILE}"
+                [[ -z "${PREVIOUS_TLS_CERT_PATH}" ]] && PREVIOUS_TLS_CERT_PATH="${TLS_CERT_PATH%/}/${TLS_CERT_FILE}"
+                [[ -z "${PREVIOUS_TLS_KEY_PATH}" ]] && PREVIOUS_TLS_KEY_PATH="${TLS_KEY_PATH%/}/${TLS_KEY_FILE}"
+                [[ -z "${PREVIOUS_TLS_DH_PARAM_PATH}" ]] && PREVIOUS_TLS_DH_PARAM_PATH="${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILE}"
 
                 # Generate a self signed certificate and key along with CA if not found
-                certificates "${TLS_CRT_PATH%/}"/"${TLS_CRT_FILENAME}"
+                certificates "${TLS_CERT_PATH%/}"/"${TLS_CERT_FILE}"
 
                 # Create DHParamFile if not found
                 if var_true "${TLS_ENABLE_DH_PARAM}"; then
@@ -395,7 +395,7 @@ EOF
                 fi
 
                 if var_true "${TLS_RESET_PERMISSIONS}"; then
-                    chown ldap:ldap "${PREVIOUS_TLS_CRT_PATH}" "${PREVIOUS_TLS_KEY_PATH}" "${PREVIOUS_TLS_CA_CRT_PATH}" "${PREVIOUS_TLS_DH_PARAM_PATH}" || true
+                    chown ldap:ldap "${PREVIOUS_TLS_CERT_PATH}" "${PREVIOUS_TLS_KEY_PATH}" "${PREVIOUS_TLS_CA_CERT_PATH}" "${PREVIOUS_TLS_DH_PARAM_PATH}" || true
                     chmod 600 "${PREVIOUS_TLS_DH_PARAM_PATH}"
                 fi
             fi
@@ -564,14 +564,14 @@ EOF
                 print_notice "Starting TLS configuration - Please wait.."
 
                 # Generate a self signed certificate and key along with CA if not found
-                certificates "${TLS_CRT_PATH%/}"/"${TLS_CRT_FILENAME}"
+                certificates "${TLS_CERT_PATH%/}"/"${TLS_CERT_FILE}"
 
                 # Create DHParamFile if not found
                 certificates dhparam
 
                 if var_true "${TLS_RESET_PERMISSIONS}"; then
-                    chmod 600 "${TLS_CRT_PATH%/}"/"${TLS_CRT_FILENAME}" "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILENAME}" "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILENAME}"
-                    chown ldap:ldap "${TLS_CRT_PATH%/}"/"${TLS_CRT_FILENAME}" "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILENAME}" "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILENAME}"
+                    chmod 600 "${TLS_CERT_PATH%/}"/"${TLS_CERT_FILE}" "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILE}" "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILE}"
+                    chown ldap:ldap "${TLS_CERT_PATH%/}"/"${TLS_CERT_FILE}" "${TLS_KEY_PATH%/}"/"${TLS_KEY_FILE}" "${TLS_DH_PARAM_PATH%/}"/"${TLS_DH_PARAM_FILE}"
                 fi
 
                 # Fix file permissions
@@ -581,7 +581,7 @@ EOF
                 if var_true "${TLS_ENABLE_DH_PARAM}"; then
                     TLS_DH_PARAM_LDIF_ENABLE="-
 replace: olcTLSDHParamFile
-olcTLSDHParamFile: ${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}
+olcTLSDHParamFile: ${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILE}
 -"
                 else
                     TLS_DH_PARAM_LDIF_ENABLE=""
@@ -589,14 +589,14 @@ olcTLSDHParamFile: ${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}
                 # Always attempt to delete olcTLSDHParamFile on disable
                 TLS_DH_PARAM_LDIF_DISABLE="-\ndelete: olcTLSDHParamFile\n-"
                 update_template /container/data/openldap/config/tls/tls-enable.ldif \
-                                                                            TLS_CA_CRT_PATH \
-                                                                            TLS_CA_CRT_FILENAME \
-                                                                            TLS_CRT_PATH \
-                                                                            TLS_CRT_FILENAME \
+                                                                            TLS_CA_CERT_PATH \
+                                                                            TLS_CA_CERT_FILE \
+                                                                            TLS_CERT_PATH \
+                                                                            TLS_CERT_FILE \
                                                                             TLS_KEY_PATH \
-                                                                            TLS_KEY_FILENAME \
+                                                                            TLS_KEY_FILE \
                                                                             TLS_DH_PARAM_PATH \
-                                                                            TLS_DH_PARAM_FILENAME \
+                                                                            TLS_DH_PARAM_FILE \
                                                                             TLS_CIPHER_SUITE \
                                                                             TLS_VERIFY_CLIENT \
                                                                             TLS_DH_PARAM_LDIF_ENABLE
@@ -606,11 +606,11 @@ olcTLSDHParamFile: ${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}
                 if [ -f "${was_started_with_tls}" ] ; then
                     rm -f "$was_started_with_tls"
                 fi
-                echo "export PREVIOUS_TLS_CA_CRT_PATH=${TLS_CA_CRT_PATH%/}/${TLS_CA_CRT_FILENAME}" | silent tee "${was_started_with_tls}"
-                echo "export PREVIOUS_TLS_CRT_PATH=${TLS_CRT_PATH%/}/${TLS_CRT_FILENAME}" | silent tee -a "${was_started_with_tls}"
-                echo "export PREVIOUS_TLS_KEY_PATH=${TLS_KEY_PATH%/}/${TLS_KEY_FILENAME}" | silent tee -a "${was_started_with_tls}"
+                echo "export PREVIOUS_TLS_CA_CERT_PATH=${TLS_CA_CERT_PATH%/}/${TLS_CA_CERT_FILE}" | silent tee "${was_started_with_tls}"
+                echo "export PREVIOUS_TLS_CERT_PATH=${TLS_CERT_PATH%/}/${TLS_CERT_FILE}" | silent tee -a "${was_started_with_tls}"
+                echo "export PREVIOUS_TLS_KEY_PATH=${TLS_KEY_PATH%/}/${TLS_KEY_FILE}" | silent tee -a "${was_started_with_tls}"
                 if var_true "${TLS_ENABLE_DH_PARAM}"; then
-                    echo "export PREVIOUS_TLS_DH_PARAM_PATH=${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILENAME}" | silent tee -a "${was_started_with_tls}"
+                    echo "export PREVIOUS_TLS_DH_PARAM_PATH=${TLS_DH_PARAM_PATH%/}/${TLS_DH_PARAM_FILE}" | silent tee -a "${was_started_with_tls}"
                 fi
 
                 # Enforce TLS

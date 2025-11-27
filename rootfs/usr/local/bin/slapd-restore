@@ -12,7 +12,7 @@ slapd_restore() {
     local filename=$2
 
     s6-svc -d /var/run/s6/legacy-services/10-openldap
-    pkill slapd
+    pkill -9 slapd
 
     tmp_backup_file="$(mktemp)"
     case "${filename##*.}" in
