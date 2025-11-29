@@ -437,9 +437,8 @@ EOF
             print_debug "Setting up Logging"
             case "${LOG_TYPE,,}" in
                 file | both )
-                    mkdir -p "${LOG_PATH}"
-                    touch "${LOG_PATH%/}"/"${LOG_FILE}"
-                    chown -R ldap:ldap "${LOG_PATH%/}"/"${LOG_FILE}"
+                    create_folder "${LOG_PATH}" ldap:ldap 750
+                    sudo -u ldap touch "${LOG_PATH%/}"/"${LOG_FILE}"
                     create_logrotate openldap "${LOG_PATH%/}"/"${LOG_FILE}" none ldap ldap
                     slapd_log_file="${LOG_PATH%/}"/"${LOG_FILE}"
                     slapd_log_type=TRUE
