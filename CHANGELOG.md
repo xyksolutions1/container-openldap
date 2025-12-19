@@ -1,4 +1,4 @@
-## 2.6-8.0.0pre 2025-11-10 <code at nfrastack dot com>
+## 2.6-8.0.0 2025-12-19 <code at nfrastack dot com>
 
    ### Changed
       - Change base image to nfrastack/base
