@@ -1,3 +1,9 @@
+## 2.6-8.0.1 2026-01-29 <code at nfastack dot com>
+
+   ### Added
+      - OpenLDAP 2.6.12
+
+
 ## 2.6-8.0.0 2025-12-19 <code at nfrastack dot com>
 
    ### Changed
