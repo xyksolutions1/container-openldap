@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: © 2026 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+saslauthd_bootstrap_filesystem() {
+    create_folder "${SASLAUTHD_PATH}" root:root 755
+    case "${SASLAUTHD_LOG_TYPE,,}" in
+        file | both )
+            touch "${SASLAUTHD_LOG_PATH%/}"/"${SASLAUTHD_LOG_FILE}"
+            saslauthd_log_file="${SASLAUTHD_LOG_PATH%/}"/"${SASLAUTHD_LOG_FILE}"
+            create_logrotate saslauthd "${SASLAUTHD_LOG_PATH%/}"/"${SASLAUTHD_LOG_FILE}" none root root
+        ;;
+    esac
+}
+
+saslauthd_configure_daemon() {
+    write_file /etc/sasl2/slapd.conf:600 <<EOF
+pwcheck_method: saslauthd
+saslauthd_path: ${SASLAUTHD_PATH}/mux
+mech_list: ${SASLAUTHD_MECH_LIST}
+EOF
+}

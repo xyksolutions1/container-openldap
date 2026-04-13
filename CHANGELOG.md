@@ -1,3 +1,8 @@
+## 2.6-8.1.0pre 2026-04-14 <code at nfastack dot com>
+
+   ### Added
+      - SaslAuthd process support - Switch on ENABLE_SASLAUTHD - See README for additional variables
+
 ## 2.6-8.0.2 2026-03-09 <code at nfastack dot com>
 
    ### Added

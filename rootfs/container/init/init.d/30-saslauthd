@@ -1,0 +1,26 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2026 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+prepare_service 30-saslauthd
+SERVICE_NAME="saslauthd"
+
+if var_true "${ENABLE_SASLAUTHD}" ; then
+    print_notice "Configuring saslauthd"
+    saslauthd_bootstrap_filesystem
+    saslauthd_configure_daemon
+else
+    print_debug "Disabling saslauthd"
+    service_stop 30-saslauthd
+    rm -rf \
+           /container/logrotate/saslauthd* \
+           /etc/fluent-bit/conf.d/saslauthd* \
+           /etc/logrotate.d/saslauthd* \
+           /etc/zabbix/*/saslauthd*
+    liftoff
+    exit 0
+fi
+
+liftoff

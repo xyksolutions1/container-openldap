@@ -258,6 +258,24 @@ If you already have a check_password.conf or ppm.conf in /etc/openldap/ the foll
 | `SLAPD_HOSTS`               | Allow overriding the default listen parameters                              | `ldap://$HOSTNAME ldaps://$HOSTNAME ldapi:///` |
 | `ULIMIT_N`                  | Set Open File Descriptor Limit                                              | `1024`                                         |
 
+#### SASLAuthd Options
+
+| Variable                             | Description                                   | Default                |
+| ------------------------------------ | --------------------------------------------- | ---------------------- |
+| `ENABLE_SASLAUTHD`                   | Enable saslauthd daemon                       | `FALSE`                |
+| `SASLAUTHD_LOG_TYPE`                 | Log Type `file` `console` `both` `none`       | `both`                 |
+| `SASLAUTHD_LOG_PATH`                 | Log Path                                      | `/logs/`               |
+| `SASLAUTHD_LOG_FILE`                 | Log File                                      | `saslauthd.log`        |
+| `SASLAUTHD_PATH`                     | Path for volatile data                        | `/run/saslauthd/`      |
+| `SASLAUTHD_COMBINE_REALM`            | Combine Realms                                | `FALSE`                |
+| `SASLAUTHD_ENABLE_ACCEPT_LOCKING`    | Enable accept() Locking                       | `FALSE`                |
+| `SASLAUTHD_ENABLE_CREDENTIAL_CACHE`  | Enable Credential Caching                     | `TRUE`                 |
+| `SASLAUTHD_CREDENTIAL_CACHE_SIZE`    | Cache size in kilobytes                       |                        |
+| `SASLAUTHD_CREDENTIAL_CACHE_TIMEOUT` | Cache timeout in seconds                      |                        |
+| `SASLAUTHD_PROCESSES`                | Processes to run (0 dynamic)                  | `0`                    |
+| `SASLAUTHD_TYPE`                     | Type when writing `/etc/sasl/slapd.conf`      | `pam`                  |
+| `SASLAUTHD_MECH_LIST`                | Mech List when writing `/etc/sasl/slapd.conf` | `PLAIN LOGIN EXTERNAL` |
+
 ## Users and Groups
 
 | Type  | Name   | ID  |

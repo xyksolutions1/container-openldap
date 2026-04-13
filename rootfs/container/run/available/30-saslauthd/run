@@ -1,0 +1,63 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2026 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+prepare_service
+SERVICE_NAME="saslauthd"
+
+check_container_initialized
+liftoff
+
+case "${SASLAUTHD_LOG_TYPE,,}" in
+    file | both )
+        saslauthd_log_file="${SASLAUTHD_LOG_PATH%/}"/"${SASLAUTHD_LOG_FILE}"
+        mkdir -p "${SASLAUTHD_LOG_PATH%/}"
+    ;;
+    none )
+        saslauthd_log_file=/dev/null
+    ;;
+esac
+
+if var_true "${SASLAUTHD_ENABLE_CREDENTIAL_CACHE}"; then
+    cc_args="-c"
+    if [ -n "${SASLAUTHD_CREDENTIAL_CACHE_SIZE}" ]; then
+        cc_args="${cc_args} -s ${SASLAUTHD_CREDENTIAL_CACHE_SIZE}"
+    fi
+    if [ -n "${SASLAUTHD_CREDENTIAL_CACHE_TIMEOUT}" ]; then
+        cc_args="${cc_args} -t ${SASLAUTHD_CREDENTIAL_CACHE_TIMEOUT}"
+    fi
+fi
+
+if var_true "${SASLAUTHD_ENABLE_ACCEPT_LOCKING}"; then
+    lock_args="-l"
+fi
+
+if var_true "${SASLAUTHD_COMBINE_REALM}"; then
+    combine_realm_arg="-r"
+fi
+
+_exec_log() {
+    local log_type="${1,,}" ; shift
+    local log_file="${1}"   ; shift
+    case "${log_type}" in
+        both )
+            exec "$@" 2>&1 | tee -a "${log_file}"
+        ;;
+        file |none )
+            exec "$@" 2>> "${log_file}"
+        ;;
+        *)
+            exec "$@" 2>&1
+        ;;
+    esac
+}
+
+print_start "Starting SASL Authentication Daemon"
+_exec_log "${SASLAUTHD_LOG_TYPE}" "${saslauthd_log_file}" \
+    /usr/sbin/saslauthd \
+        -m ${SASLAUTHD_PATH} \
+        -a ${SASLAUTHD_TYPE} \
+        -n ${SASLAUTHD_PROCESSES} \
+        -d ${cc_args} ${lock_args} ${combine_realm_arg} ${SASLAUTHD_EXTRA_ARGS}
