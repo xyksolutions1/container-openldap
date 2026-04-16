@@ -3,7 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 saslauthd_bootstrap_filesystem() {
-    create_folder "${SASLAUTHD_PATH}" root:root 755
+    if [ "${SASLAUTHD_CONFIG_PATH%/}" != "/etc/sasl2" ] ; then
+        rm -rf /etc/sasl2
+        ln -sf "${SASLAUTHD_CONFIG_PATH%/}" /etc/sasl2
+    fi
+    create_folder "${SASLAUTHD_CONFIG_PATH}" root:ldap 750 force
     case "${SASLAUTHD_LOG_TYPE,,}" in
         file | both )
             touch "${SASLAUTHD_LOG_PATH%/}"/"${SASLAUTHD_LOG_FILE}"
@@ -11,12 +15,46 @@ saslauthd_bootstrap_filesystem() {
             create_logrotate saslauthd "${SASLAUTHD_LOG_PATH%/}"/"${SASLAUTHD_LOG_FILE}" none root root
         ;;
     esac
+
+    create_folder "${SASLAUTHD_RUN_PATH%/}" root:ldap 750 force
 }
 
+
 saslauthd_configure_daemon() {
-    write_file /etc/sasl2/slapd.conf:600 <<EOF
+    if var_true "${SASLAUTHD_AUTO_CONFIGURE}" ; then
+        write_file "${SASLAUTHD_CONFIG_PATH%/}"/"${SASLAUTHD_SLAPD_CONFIG_FILE}":640 <<EOF
 pwcheck_method: saslauthd
-saslauthd_path: ${SASLAUTHD_PATH}/mux
+saslauthd_path: ${SASLAUTHD_RUN_PATH}/mux
 mech_list: ${SASLAUTHD_MECH_LIST}
 EOF
+    else
+        print_warning "SASLAUTHD_AUTO_CONFIGURE is disabled, skipping automatic configuration for saslauthd. Ensure that the appropriate configuration files are mounted at ${SASLAUTHD_CONFIG_PATH%/}/${SASLAUTHD_SLAPD_CONFIG_FILE} and ${SASLAUTHD_PAM_CONFIG_PATH%/}/${SASLAUTHD_PAM_LDAP_CONFIG_FILE} with the necessary entries for saslauthd"
+        chmod 640 "${SASLAUTHD_CONFIG_PATH%/}"/"${SASLAUTHD_SLAPD_CONFIG_FILE}"
+        chown root:ldap "${SASLAUTHD_CONFIG_PATH%/}"/"${SASLAUTHD_SLAPD_CONFIG_FILE}"
+    fi
 }
+
+saslauthd_configure_pam() {
+    if [ "${SASLAUTHD_SLAPD_TYPE,,}" = "pam" ] ; then
+        print_notice "Configuring PAM for saslauthd/slapd"
+        if [ -n "${SASLAUTHD_LDAP_PAM_CONFIG_FILE}" ] ; then
+            ln -s "${SASLAUTHD_PAM_CONFIG_PATH%/}"/"${SASLAUTHD_PAM_LDAP_CONFIG_FILE}" /etc/pam.d/ldap
+        fi
+
+        if [ "${SASLAUTHD_PAM_CONFIG_PATH%/}" != "/etc/pam" ] && [ "${SASLAUTHD_PAM_LDAP_CONFIG_FILE}" != "ldap" ] ; then
+            rm -rf /etc/pam/ldap
+            ln -s "${SASLAUTHD_PAM_CONFIG_PATH%/}"/"${SASLAUTHD_PAM_LDAP_CONFIG_FILE}" /etc/pam.d/ldap
+        fi
+        if var_true "${SASLAUTHD_PAM_AUTO_CONFIGURE}" ; then
+            write_file "${SASLAUTHD_PAM_CONFIG_PATH%/}"/"${SASLAUTHD_PAM_LDAP_CONFIG_FILE}":700 <<EOF
+auth    ${SASLAUTHD_PAM_LDAP_AUTH_ENTRY}
+account ${SASLAUTHD_PAM_LDAP_ACCOUNT_ENTRY}
+EOF
+        else
+            chmod 644 "${SASLAUTHD_PAM_CONFIG_PATH%/}"/"${SASLAUTHD_PAM_LDAP_CONFIG_FILE}"
+            chown root:ldap "${SASLAUTHD_PAM_CONFIG_PATH%/}"/"${SASLAUTHD_PAM_LDAP_CONFIG_FILE}"
+            print_warning "SASLAUTHD_PAM_AUTO_CONFIGURE is disabled, skipping PAM configuration for saslauthd. Ensure that the appropriate PAM configuration file is mounted at ${SASLAUTHD_PAM_CONFIG_PATH%/}/${SASLAUTHD_PAM_LDAP_CONFIG_FILE} with the necessary auth and account entries for saslauthd"
+        fi
+    fi
+}
+dcu

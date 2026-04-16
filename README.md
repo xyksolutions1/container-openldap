@@ -260,21 +260,32 @@ If you already have a check_password.conf or ppm.conf in /etc/openldap/ the foll
 
 #### SASLAuthd Options
 
-| Variable                             | Description                                   | Default                |
-| ------------------------------------ | --------------------------------------------- | ---------------------- |
-| `ENABLE_SASLAUTHD`                   | Enable saslauthd daemon                       | `FALSE`                |
-| `SASLAUTHD_LOG_TYPE`                 | Log Type `file` `console` `both` `none`       | `both`                 |
-| `SASLAUTHD_LOG_PATH`                 | Log Path                                      | `/logs/`               |
-| `SASLAUTHD_LOG_FILE`                 | Log File                                      | `saslauthd.log`        |
-| `SASLAUTHD_PATH`                     | Path for volatile data                        | `/run/saslauthd/`      |
-| `SASLAUTHD_COMBINE_REALM`            | Combine Realms                                | `FALSE`                |
-| `SASLAUTHD_ENABLE_ACCEPT_LOCKING`    | Enable accept() Locking                       | `FALSE`                |
-| `SASLAUTHD_ENABLE_CREDENTIAL_CACHE`  | Enable Credential Caching                     | `TRUE`                 |
-| `SASLAUTHD_CREDENTIAL_CACHE_SIZE`    | Cache size in kilobytes                       |                        |
-| `SASLAUTHD_CREDENTIAL_CACHE_TIMEOUT` | Cache timeout in seconds                      |                        |
-| `SASLAUTHD_PROCESSES`                | Processes to run (0 dynamic)                  | `0`                    |
-| `SASLAUTHD_TYPE`                     | Type when writing `/etc/sasl/slapd.conf`      | `pam`                  |
-| `SASLAUTHD_MECH_LIST`                | Mech List when writing `/etc/sasl/slapd.conf` | `PLAIN LOGIN EXTERNAL` |
+| Variable                             | Description                                                                                | Default                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `ENABLE_SASLAUTHD`                   | Enable saslauthd daemon                                                                    | `FALSE`                                     |
+| `SASLAUTHD_LOG_TYPE`                 | Log Type `file` `console` `both` `none`                                                    | `both`                                      |
+| `SASLAUTHD_LOG_PATH`                 | Log Path                                                                                   | `/logs/`                                    |
+| `SASLAUTHD_LOG_FILE`                 | Log File                                                                                   | `saslauthd.log`                             |
+| `SASLAUTHD_CONFIG_PATH`              | Path for storing SASLAUTHD_SLAPD_CONFIG_FILE - if not default will symlink to this default | `/etc/sasl2/`                               |
+| `SASLAUTHD_SLAPD_CONFIG_FILE`        | Configuration file for slapd                                                               | `slapd.conf`                                |
+| `SASLAUTHD_RUN_PATH`                 | Path for volatile data                                                                     | `/run/saslauthd/`                           |
+| `SASLAUTHD_COMBINE_REALM`            | Combine Realms                                                                             | `FALSE`                                     |
+| `SASLAUTHD_ENABLE_ACCEPT_LOCKING`    | Enable accept() Locking                                                                    | `FALSE`                                     |
+| `SASLAUTHD_ENABLE_CREDENTIAL_CACHE`  | Enable Credential Caching                                                                  | `TRUE`                                      |
+| `SASLAUTHD_CREDENTIAL_CACHE_SIZE`    | Cache size in kilobytes                                                                    |                                             |
+| `SASLAUTHD_CREDENTIAL_CACHE_TIMEOUT` | Cache timeout in seconds                                                                   |                                             |
+| `SASLAUTHD_PROCESSES`                | Processes to run (0 dynamic)                                                               | `0`                                         |
+| `SASLAUTHD_AUTO_CONFIGURE`           | Auto configure ${SASLAUTHD_CONFIG_PATH}/${SASLAUTHD_SLAPD_CONFIG_FILE}                     | `TRUE`                                      |
+| `SASLAUTHD_SLAPD_TYPE`               | Type when writing `/etc/sasl/slapd.conf`                                                   | `pam`                                       |
+| `SASLAUTHD_MECH_LIST`                | Mech List when writing `/etc/sasl/slapd.conf`                                              | `PLAIN LOGIN EXTERNAL`                      |
+| `SASLAUTHD_SLAPD_TYPE`               |                                                                                            | `pam`                                       |
+| `SASLAUTHD_PAM_CONFIG_PATH`          | Pam Configuration path - If not default will symlink to this                               | `/etc/pam/`                                 |
+| `SASLAUTHD_SLAPD_PAM_FILE`           | Pam Configuration file - If not default will symlink to this                               | `ldap`                                      |
+| `SASLAUTHD_PAM_AUTO_CONFIGURE`       | Auto configure ${SASLAUTHD_PAM_CONFIG_PATH}/${SASLAUTHD_PAM_SLAPD_CONFIG_FILE}             | `TRUE`                                      |
+| `SASLAUTHD_PAM_LDAP_AUTH_ENTRY`      | Auth line entry                                                                            | see second line |
+| | `required pam_exec.so debug expose_authtok` | |
+| `SASLAUTHD_PAM_LDAP_ACCOUNT_ENTRY`   | Account line entry                                                                         | see second line                    |
+| | ``required pam_permit.so` | |
 
 ## Users and Groups
 

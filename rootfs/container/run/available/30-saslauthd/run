@@ -57,7 +57,7 @@ _exec_log() {
 print_start "Starting SASL Authentication Daemon"
 _exec_log "${SASLAUTHD_LOG_TYPE}" "${saslauthd_log_file}" \
     /usr/sbin/saslauthd \
-        -m ${SASLAUTHD_PATH} \
-        -a ${SASLAUTHD_TYPE} \
+        -m ${SASLAUTHD_RUN_PATH%/} \
+        -a ${SASLAUTHD_SLAPD_TYPE} \
         -n ${SASLAUTHD_PROCESSES} \
         -d ${cc_args} ${lock_args} ${combine_realm_arg} ${SASLAUTHD_EXTRA_ARGS}
