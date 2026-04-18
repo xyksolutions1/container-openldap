@@ -14,6 +14,7 @@ Upon starting this image it will give you a ready to run server with many config
 * Supports Replication
 * Scheduled Backups of Data
 * Ability to choose NIS or rfc2307bis Schema
+* Abilty to authenticate against SASL2
 * Additional Password Modules (Argon, SHA2, PBKDF2)
 * Two Password Checking Modules - check_password.so and ppm.so
 * Zabbix Monitoring templates included
@@ -279,7 +280,7 @@ If you already have a check_password.conf or ppm.conf in /etc/openldap/ the foll
 | `SASLAUTHD_SLAPD_TYPE`               | Type when writing `/etc/sasl/slapd.conf`                                                   | `pam`                                       |
 | `SASLAUTHD_MECH_LIST`                | Mech List when writing `/etc/sasl/slapd.conf`                                              | `PLAIN LOGIN EXTERNAL`                      |
 | `SASLAUTHD_SLAPD_TYPE`               |                                                                                            | `pam`                                       |
-| `SASLAUTHD_PAM_CONFIG_PATH`          | Pam Configuration path - If not default will symlink to this                               | `/etc/pam/`                                 |
+| `SASLAUTHD_PAM_CONFIG_PATH`          | Pam Configuration path - If not default will symlink to this                               | `/etc/pam.d/`                                 |
 | `SASLAUTHD_SLAPD_PAM_FILE`           | Pam Configuration file - If not default will symlink to this                               | `ldap`                                      |
 | `SASLAUTHD_PAM_AUTO_CONFIGURE`       | Auto configure ${SASLAUTHD_PAM_CONFIG_PATH}/${SASLAUTHD_PAM_SLAPD_CONFIG_FILE}             | `TRUE`                                      |
 | `SASLAUTHD_PAM_LDAP_AUTH_ENTRY`      | Auth line entry                                                                            | see second line |
