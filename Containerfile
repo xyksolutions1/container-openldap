@@ -5,16 +5,16 @@
 ARG \
     BASE_IMAGE
 
-FROM ${BASE_IMAGE}
+FROM docker.io/xyksolutions1/container-base:main
 
 LABEL \
         org.opencontainers.image.title="OpenLDAP" \
         org.opencontainers.image.description="Directory Server" \
-        org.opencontainers.image.url="https://hub.docker.com/r/nfrastack/openldap" \
-        org.opencontainers.image.documentation="https://github.com/nfrastack/container-openldap/blob/main/README.md" \
-        org.opencontainers.image.source="https://github.com/nfrastack/container-openldap.git" \
-        org.opencontainers.image.authors="Nfrastack <code@nfrastack.com>" \
-        org.opencontainers.image.vendor="Nfrastack <https://www.nfrastack.com>" \
+        org.opencontainers.image.url="https://hub.docker.com/r/xyksolutions1/openldap" \
+        org.opencontainers.image.documentation="https://github.com/xyksolutions1/container-openldap/blob/main/README.md" \
+        org.opencontainers.image.source="https://github.com/xyksolutions1/container-openldap.git" \
+        org.opencontainers.image.authors="xyksolutions1" \
+        org.opencontainers.image.vendor="xyksolutions1" \
         org.opencontainers.image.licenses="MIT"
 
 ARG OPENLDAP_VERSION="2.6.13" \
@@ -30,8 +30,8 @@ EXPOSE 389 636
 
 ENV \
     CONTAINER_ENABLE_SCHEDULING=TRUE \
-    IMAGE_NAME="nfrastack/openldap" \
-    IMAGE_REPO_URL="https://github.com/nfrastack/container-openldap/"
+    IMAGE_NAME="xyksolutions1/openldap" \
+    IMAGE_REPO_URL="https://github.com/xyksolutions1/container-openldap/"
 
 RUN echo "" && \
     OPENLDAP_BUILD_DEPS_ALPINE=" \
